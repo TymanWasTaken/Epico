@@ -1,30 +1,18 @@
 <script lang="ts">
-	export let name: string;
+	import LoginBox from "./LoginBox.svelte";
+	export let api: string;
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<LoginBox {api}/>
 </main>
 
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
+	:global(body) {
+		background: rgb(29,0,36);
+		background: linear-gradient(90deg, rgba(29,0,36,1) 0%, rgba(121,9,97,1) 35%, rgba(181,0,255,1) 100%); 
+        display: flex;
+        justify-content: center;
+        align-items: center;
 	}
 </style>
