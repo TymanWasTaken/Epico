@@ -1,10 +1,14 @@
 <script lang="ts">
 	import LoginBox from "./LoginBox.svelte";
+	import url from './routing/url';
+
 	export let api: string;
 </script>
 
 <main>
-	<LoginBox {api}/>
+	{#if $url.pathname === '/login'}
+		<LoginBox {api} />
+	{/if}
 </main>
 
 <style>

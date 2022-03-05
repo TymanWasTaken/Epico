@@ -7,15 +7,20 @@
     let form: HTMLFormElement;
     let username: string;
     let password: string;
-    // Declare variable for if statement in html
-    let isUsernameEmpty = false;
+    // Declare variables for empty submits
+    let submittedEmpty = false;
     // Register submit listener on form
     onMount(() => {
         form.addEventListener('submit', async (e: SubmitEvent) => {
             // Prevent default form submit
             e.preventDefault();
+            // Check for empty
+            if (!username || !password) {
+                submittedEmpty = true
+                return
+            } else submittedEmpty = false
             // Fetch login route from api url
-            const req = await fetch(`${api}/auth/login`, {
+            const res: EpicoApi.LoginResponse = await fetch(`${api}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -24,23 +29,31 @@
                     username,
                     password
                 })
-            })
+            }).then(req => req.json());
+            // Handle login error
+            if (res.success === false) {
+                alert(res.message);
+                return
+            }
+            // Set token in storage
+            window.sessionStorage.setItem('token', res.token);
         })
     })
-    // Declare email onchange event
-    const onUsernameChange = () => isUsernameEmpty = username.length < 1;
 </script>
 
 <main>
     <h1>Welcome back!</h1>
     <form bind:this={form}>
-        {#if isUsernameEmpty} <p class="error">Username is required</p> {/if}
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="Username" bind:value={username} on:input={onUsernameChange}/>
-        <label for="password">Password</label>
+        <label for="username">Username<span>*</span></label>
+        <input type="text" id="username" name="username" placeholder="Username" bind:value={username} />
+        <label for="password">Password<span>*</span></label>
         <input type="password" id="password" name="password" placeholder="Password" bind:value={password} />
         <br>
         <input type="submit" value="Login" />
+        {#if submittedEmpty} 
+            <br>
+            <p1 class="missing">Both username and password are required!</p1>
+        {/if}
     </form>
 </main>
 
@@ -57,12 +70,15 @@
             margin-right: 20px;
         }
         > form {
-            > p.error {
-                color: red;
-            }
             > label {
                 font-size: large;
                 margin-bottom: 5px;
+                > span {
+                    color: red;
+                }
+            }
+            > p1.missing {
+                color: red;
             }
             > input {
                 border-radius: 10px;
